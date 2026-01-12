@@ -1,0 +1,76 @@
+# conversor_distancia.py
+
+# ==============================================================================
+# Comentario de Documentación:
+# Programa simple en Python que convierte una distancia de kilómetros (km) a 
+# millas (mi). Utiliza tipos de datos integer, float, y string.
+# ==============================================================================
+
+# Constante para el factor de conversión: 1 kilómetro es aproximadamente 0.621371 millas
+FACTOR_CONVERSION_KM_A_MI = 0.621371
+
+def convertir_kilómetros_a_millas():
+    """
+    Función principal que pide al usuario la distancia en kilómetros,
+    realiza la conversión a millas y muestra el resultado.
+    """
+    
+    # -----------------------------
+    # 2. Tipos de Datos e Identificadores (snake_case)
+    # -----------------------------
+    
+    # Tipo de dato: string (para el saludo y la entrada del usuario)
+    saludo_bienvenida = "📏 Bienvenido al Conversor de Kilómetros a Millas."
+    print(saludo_bienvenida)
+    
+    # Bucle para asegurar que la entrada sea un número válido
+    while True:
+        try:
+            # Pedir entrada al usuario (el input es inicialmente un string)
+            entrada_km_str = input("\nPor favor, introduce la distancia en kilómetros (km): ")
+            
+            # Convertir a float (Tipo de dato: float) para poder operar con decimales
+            distancia_en_kilómetros = float(entrada_km_str)
+            
+            # Comentario relevante: Verificar que la distancia no sea negativa
+            if distancia_en_kilómetros < 0:
+                print("⚠️ Error: La distancia no puede ser un número negativo. Intenta de nuevo.")
+                continue  # Vuelve al inicio del bucle
+                
+            break # Salir del bucle si la entrada es válida
+            
+        except ValueError:
+            # Comentario relevante: Manejar errores si el usuario no introduce un número
+            print("❌ Error: La entrada no es un número válido. Intenta de nuevo.")
+            
+    # Comentario relevante: Aplicar la fórmula de conversión
+    distancia_en_millas = distancia_en_kilómetros * FACTOR_CONVERSION_KM_A_MI
+    
+    # Tipo de dato: integer (para un mensaje de estado)
+    código_estado = 1
+    
+    # Tipo de dato: boolean (para verificar si la conversión se realizó)
+    conversión_exitosa = True 
+    
+    # -----------------------------
+    # 3. Mostrar el Resultado
+    # -----------------------------
+    
+    # Formatear el resultado para que tenga solo dos decimales para una mejor lectura
+    resultado_formateado = f"{distancia_en_millas:.2f}"
+    
+    # Construir el mensaje final (concatenación de strings y variables)
+    mensaje_resultado = (
+        f"\n✅ ¡Conversión completa! (Código: {código_estado})\n"
+        f"  - Kilómetros (km): {distancia_en_kilómetros} km\n"
+        f"  - Millas (mi): {resultado_formateado} mi"
+    )
+    
+    print(mensaje_resultado)
+    
+    if conversión_exitosa:
+        print("\n✨ La conversión fue procesada correctamente.")
+    
+# Ejecución de la función principal
+if __name__ == "__main__":
+    convertir_kilómetros_a_millas()
