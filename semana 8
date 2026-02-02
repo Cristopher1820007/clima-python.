@@ -1,0 +1,121 @@
+import os
+import subprocess
+import platform
+
+class DashboardPOO:
+    """
+    Clase para gestionar la visualización y ejecución de scripts
+    del curso de Programación Orientada a Objetos.
+    """
+    
+    def __init__(self):
+        # Localiza la ruta donde se ejecuta el script
+        self.ruta_raiz = os.path.dirname(__file__)
+        self.unidades = {
+            '1': 'Unidad 1',
+            '2': 'Unidad 2'
+        }
+
+    def limpiar_pantalla(self):
+        """Limpia la terminal según el sistema operativo."""
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    def leer_archivo(self, ruta):
+        """Muestra el contenido del script seleccionado."""
+        try:
+            with open(ruta, 'r', encoding='utf-8') as f:
+                print(f"\n{'#'*60}")
+                print(f" ARCHIVO: {os.path.basename(ruta)}")
+                print(f"{'#'*60}\n")
+                print(f.read())
+        except Exception as e:
+            print(f"Error al intentar leer el archivo: {e}")
+
+    def ejecutar_script(self, ruta):
+        """Lanza el script en una consola independiente."""
+        sistema = platform.system()
+        try:
+            if sistema == "Windows":
+                subprocess.Popen(['cmd', '/k', 'python', ruta])
+            elif sistema == "Darwin":  # macOS
+                subprocess.Popen(['open', '-a', 'Terminal', 'python3', ruta])
+            else:  # Linux
+                subprocess.Popen(['xterm', '-e', 'python3', ruta])
+        except Exception as e:
+            print(f"No se pudo ejecutar el script: {e}")
+
+    def menu_scripts(self, ruta_carpeta):
+        """Lista archivos .py en la carpeta final."""
+        while True:
+            self.limpiar_pantalla()
+            scripts = [f for f in os.listdir(ruta_carpeta) if f.endswith('.py')]
+            
+            print(f"--- EXPLORADOR DE SCRIPTS: {os.path.basename(ruta_carpeta)} ---")
+            if not scripts:
+                print("No hay archivos .py aquí.")
+                input("\nPresiona Enter para volver...")
+                break
+                
+            for i, s in enumerate(scripts, 1):
+                print(f"[{i}] - {s}")
+            print("[0] - Volver")
+
+            opcion = input("\nSeleccione un archivo: ")
+            if opcion == '0': break
+            
+            if opcion.isdigit() and 1 <= int(opcion) <= len(scripts):
+                ruta_final = os.path.join(ruta_carpeta, scripts[int(opcion)-1])
+                self.leer_archivo(ruta_final)
+                
+                acc = input("\n¿Ejecutar script? (s/n): ").lower()
+                if acc == 's':
+                    self.ejecutar_script(ruta_final)
+                input("\nPresiona Enter para continuar...")
+
+    def menu_subcarpetas(self, nombre_unidad):
+        """Muestra las subcarpetas de la unidad elegida."""
+        ruta_u = os.path.join(self.ruta_raiz, nombre_unidad)
+        if not os.path.exists(ruta_u):
+            print(f"La carpeta {nombre_unidad} no existe.")
+            input("Enter para continuar...")
+            return
+
+        while True:
+            self.limpiar_pantalla()
+            subs = [f.name for f in os.scandir(ruta_u) if f.is_dir()]
+            print(f"--- TEMAS DE {nombre_unidad.upper()} ---")
+            for i, s in enumerate(subs, 1):
+                print(f"{i}. {s}")
+            print("0. Regresar")
+
+            opcion = input("\nSeleccione un tema: ")
+            if opcion == '0': break
+            
+            if opcion.isdigit() and 1 <= int(opcion) <= len(subs):
+                self.menu_scripts(os.path.join(ruta_u, subs[int(opcion)-1]))
+
+    def iniciar(self):
+        """Lanza el menú principal del Dashboard."""
+        while True:
+            self.limpiar_pantalla()
+            print("==========================================")
+            print("      DASHBOARD DE GESTIÓN DE POO")
+            print("==========================================")
+            for k, v in self.unidades.items():
+                print(f" {k} > {v}")
+            print(" 0 > Salir del programa")
+            
+            op = input("\nIngrese su elección: ")
+            if op == '0':
+                print("Cerrando sistema...")
+                break
+            elif op in self.unidades:
+                self.menu_subcarpetas(self.unidades[op])
+            else:
+                print("Selección inválida.")
+                input("Enter para reintentar...")
+
+# Ejecución única
+if __name__ == "__main__":
+    app = DashboardPOO()
+    app.iniciar()
